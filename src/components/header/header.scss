@@ -1,0 +1,124 @@
+@import "../../style/normalize.scss";
+@import "../../style/variables.scss";
+
+.header {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   width: 100%;
+   height: 80px;
+   background-color: $color-secondary;
+   margin-bottom: 26px;
+   padding-right: 22px;
+   padding-left: 22px;
+   box-sizing: border-box;
+   font-size: $font-size--header;
+
+   &__h1 {
+      font-size: $font-size--header;
+      font-weight: $font-weight;
+   }
+
+   &__menu {
+      display: flex;
+      align-items: center;
+      padding-left: 22px;
+   }
+
+   &__link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+      width: auto;
+      height: auto;
+      text-decoration: none;
+      color: $text-color;
+      border: 1px solid $btn-color;
+      border-radius: 5px;
+      margin: 0 0 0 22px;
+      background-color: $btn-color;
+
+      &:hover,
+      &:focus {
+         // color: inherit;
+         text-shadow: 1px 1px $grey;
+      }
+
+      &:active {
+         background-color: $grey-light;
+      }
+
+      &--padding {
+         padding: 6px 18px 10px 18px;
+      }
+
+      &--border {
+         border: 1px solid $shadow-color;
+      }
+
+      &--small {
+         font-size: $font-size--inline;
+         line-height: $line-height--link;
+         padding: 5px 17px;
+      }
+
+      &--height40px {
+         padding: 0 35px;
+         height: 40px;
+      }
+
+      &--red {
+         border-color: $color-error;
+         color: $color-error;
+      }
+
+      &--blue {
+         border-color: $primary-color;
+         color: $primary-color;
+      }
+
+      &--green {
+         border-color: $color-success;
+         color: $color-success;
+         text-decoration: none;
+      }
+   }
+
+   &__btn {
+      display: flex;
+      justify-self: flex-start;
+      font-size: inherit;
+      line-height: inherit;
+      flex-wrap: nowrap;
+      padding: 0;
+      border: none;
+      border-radius: 5px;
+      box-sizing: border-box;
+      font: inherit;
+      color: inherit;
+      background-color: transparent;
+      align-items: center;
+
+      &--margin {
+         margin: 0 26px;
+      }
+
+      &:hover,
+      &:focus {
+         text-shadow: 1px 1px $grey;
+      }
+
+      &:active {
+         color: $shadow-color;
+         transform: scale(1.1);
+      }
+   }
+
+   &__avatar {
+      margin-left: 13px;
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+   }
+}

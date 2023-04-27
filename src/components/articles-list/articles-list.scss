@@ -1,0 +1,19 @@
+@import "../../style/mixins.scss";
+@import "../../style/normalize.scss";
+@import "../../style/variables.scss";
+@import "../../style/fonts.scss";
+
+.articles-list {
+   list-style: none;
+   padding: 0 22px;
+}
+
+.alert-danger {
+   height: 25px;
+   width: inherit;
+   text-align: center;
+   border: 1px solid $grey-darkest;
+   border-radius: 5px;
+   background-color: $grey-light;
+   color: $color-error;
+}

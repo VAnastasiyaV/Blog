@@ -1,0 +1,119 @@
+@import "../../style/mixins.scss";
+@import "../../style/normalize.scss";
+@import "../../style/variables.scss";
+@import "../../style/fonts.scss";
+
+.new-article {
+  display: block;
+  @include font($font-weight--400, $font-size--inline, $line-height--text, 0.5px);
+  width: auto;
+  max-width: 834px;
+  margin: auto;
+  background: $color-secondary;
+  padding: 48px 32px;
+
+  &--flex {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    padding-bottom: 1.2rem;
+  }
+
+  &__h1 {
+    font-family: $font-family-robboto;
+    text-align: center;
+  }
+
+  &__form {
+    text-align: start;
+  }
+
+  &__input {
+    display: block;
+    width: 100%;
+    height: 40px;
+    line-height: 1.5rem;
+    box-sizing: border-box;
+    border: 1px solid #D9D9D9;
+    border-radius: 4px;
+    padding: 0 15px;
+
+    &::placeholder {
+      color: $grey;
+    }
+
+    &:active,
+    &:hover,
+    &:focus {
+      outline: 0;
+      outline-offset: 0;
+      border: 1px solid $primary-color;
+    }
+
+    &:focus:invalid,
+    &:invalid,
+    &--invalid,
+    &--invalid:focus {
+      border-color: $color-error;
+      color: $color-error;
+      box-shadow: none;
+    }
+  }
+
+  &__auto-height {
+    height: auto;
+  }
+
+
+  &__width30vw {
+    width: 30vw;
+  }
+
+  &__tags {
+    display: flex;
+    position: relative;
+    margin: 5px 2px 0 0;
+  }
+
+  &__tagsError {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    margin-top: 38px;
+    margin-bottom: 5px;
+    color: $color-error
+  }
+
+  &__button {
+    @include font($font-weight--400, $font-size--button, $line-height--button, 0.5px);
+    width: 350px;
+    height: 40px;
+    margin-top: 21px;
+    border: 1px solid $primary-color;
+    text-align: center;
+    border-radius: 0.25rem;
+    background-color: $primary-color;
+    color: $color-secondary;
+    box-sizing: border-box;
+
+    &:hover,
+    :focus {
+      border: 2px solid $blue;
+    }
+
+    &:active {
+      background-color: $blue;
+    }
+  }
+}
+
+button:focus-visible {
+  outline: none;
+  border: 2px solid $blue;
+}
+
+ul {
+  margin-left: 0;
+  padding-left: 0;
+}

@@ -1,0 +1,57 @@
+@import "../../style/mixins.scss";
+@import "../../style/normalize.scss";
+@import "../../style/variables.scss";
+@import "../../style/fonts.scss";
+
+.sign-sample {
+  display: inline-block;
+  @include font($font-weight--400, $font-size--inline, $line-height--text, 0.5px);
+  background: $color-secondary;
+  padding: 48px 32px;
+
+  &__h1 {
+    font-family: $font-family-robboto;
+    text-align: center;
+  }
+
+  &__form {
+    display: inline-block;
+    text-align: start;
+  }
+
+  &__button {
+    @include font($font-weight--400, $font-size--button, $line-height--button, 0.5px);
+    width: 350px;
+    height: 40px;
+    margin-top: 21px;
+    border: 1px solid $primary-color;
+    text-align: center;
+    border-radius: 0.25rem;
+    background-color: $primary-color;
+    color: $color-secondary;
+    box-sizing: border-box;
+
+    &:hover,
+    :focus {
+      border: 2px solid $blue;
+    }
+
+    &:active {
+      background-color: $blue;
+    }
+
+    &--grey {
+      background-color: $grey-darker;
+      border-color: $grey-darker;
+    }
+  }
+}
+
+:where(.css-dev-only-do-not-override-ph9edi).ant-divider-horizontal {
+  margin: 0.7rem 0 0.6rem 0;
+}
+
+button:focus-visible {
+  outline: none;
+  border: 2px solid $blue;
+}

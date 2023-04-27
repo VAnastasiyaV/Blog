@@ -1,0 +1,142 @@
+@import "../../style/mixins.scss";
+@import "../../style/normalize.scss";
+@import "../../style/variables.scss";
+@import "../../style/fonts.scss";
+
+.sign-up-page {
+
+  &__form {
+    width: 350px;
+    text-align: start;
+  }
+
+  &__label {
+    color: $grey;
+  }
+
+  &__input {
+    display: block;
+    width: 350px;
+    height: 40px;
+    line-height: $line-height--button;
+    box-sizing: border-box;
+    border: 1px solid $grey-light;
+    border-radius: 4px;
+    margin-bottom: 0.8rem;
+    padding: 0 15px;
+
+    &::placeholder {
+      color: $grey;
+    }
+
+    &:active,
+    &:hover,
+    &:focus {
+      outline: 0;
+      outline-offset: 0;
+      border: 1px solid $primary-color;
+    }
+
+    &:focus:invalid,
+    &:invalid,
+    &--invalid,
+    &--invalid:focus {
+      border-color: $color-error;
+      color: $color-error;
+      box-shadow: none;
+    }
+  }
+
+  &__container {
+    vertical-align: top;
+    width: 320px;
+    margin: auto;
+    text-align: start;
+  }
+
+  &__checkbox {
+    position: absolute;
+    opacity: 0;
+    width: 16px;
+    height: 16px;
+  }
+
+  &__checkbox+label {
+    display: inline-flex;
+  }
+
+  &__checkbox+label::before {
+    content: '';
+    width: 22px;
+    height: 16px;
+    border: 1px solid $primary-color;
+    border-radius: 2px;
+    margin: 0.25em 0.6em 0 0;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 100% 100%;
+  }
+
+  &__checkbox:checked+label::before {
+    background-color: $primary-color;
+    background-image: url("check.png");
+  }
+
+  label:hover:before>&__checkbox:not(:checked):not(:disabled) {
+    border: 2px solid $blue;
+  }
+
+  label:hover:before>&__checkbox:focus:not(:checked) {
+    border-color: $primary-color;
+  }
+
+  &__link {
+    display: inline-block;
+    white-space: nowrap;
+    text-decoration: none;
+    text-align: start;
+    margin: 0;
+    padding: 0;
+    color: $primary-color;
+    font-size: $font-size--small;
+    line-height: $line-height--link;
+    margin: 8px 4px 0 0;
+
+    &--grey {
+      color: $grey-darker;
+    }
+  }
+
+  &__invalid {
+    color: $color-error;
+    font-size: $font-size--inline;
+    line-height: $line-height--text;
+    margin: 0;
+  }
+
+  &__btn {
+    display: flex;
+    justify-self: flex-start;
+    font-size: $font-size--small;
+    line-height: $line-height--text;
+    padding: 0;
+    border: none;
+    font: inherit;
+    color: inherit;
+    background-color: transparent;
+  }
+}
+
+:where(.css-dev-only-do-not-override-ph9edi).ant-divider-horizontal {
+  margin: 0.7rem 0 0.6rem 0;
+}
+
+.alert-danger {
+  height: 25px;
+  width: inherit;
+  text-align: center;
+  border: 1px solid $grey-darkest;
+  border-radius: 5px;
+  background-color: $grey-light;
+  color: $color-error;
+}

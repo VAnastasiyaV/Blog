@@ -1,0 +1,8 @@
+@import "../../style/mixins.scss";
+@import "../../style/normalize.scss";
+@import "../../style/variables.scss";
+@import "../../style/fonts.scss";
+
+input:-internal-autofill-selected {
+   background-color: white;
+}

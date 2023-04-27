@@ -1,0 +1,27 @@
+@import "../../style/variables.scss";
+
+.error-indicator {
+    padding-top: 5%;
+    text-align: center;
+    color: $color-error;
+    font-size: $font-size--big;
+
+    &__icon {
+        width: 300px;
+    }
+
+    &__oops {
+        width: 100%;
+        font-size: $font-size--large;
+        margin: 0;
+    }
+}
+
+element.style {
+    gap: 8px;
+}
+
+.ant-space-vertical {
+    flex-direction: column;
+    width: 100%;
+}

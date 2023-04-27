@@ -1,0 +1,18 @@
+@import "../../style/mixins.scss";
+@import "../../style/normalize.scss";
+@import "../../style/variables.scss";
+@import "../../style/fonts.scss";
+
+.footer {
+   display: flex;
+   justify-content: center;
+   padding-bottom: 17px;
+}
+
+.ant-pagination .ant-pagination-item-active {
+   background-color: $primary-color;
+}
+
+.ant-pagination .ant-pagination-item-active a {
+   color: $color-secondary;
+}

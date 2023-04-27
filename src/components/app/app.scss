@@ -1,0 +1,21 @@
+@import "../../style/mixins.scss";
+@import "../../style/normalize.scss";
+@import "../../style/variables.scss";
+@import "../../style/fonts.scss";
+
+.app {
+  @include font($font-weight, 16px, $line-height--header, 0.5px);
+  font-family: $font-family;
+  background-color: $color-main;
+  min-width: 100vw;
+  min-height: 100vh;
+  box-sizing: border-box;
+  border: 1px solid $color-main;
+  text-align: center;
+
+  &__offline {
+    text-align: center;
+    -webkit-margin-before: 40%;
+    margin-block-start: 40%;
+  }
+}

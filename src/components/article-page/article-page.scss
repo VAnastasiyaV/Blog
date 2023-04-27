@@ -1,0 +1,58 @@
+@import "../../style/mixins.scss";
+@import "../../style/normalize.scss";
+@import "../../style/variables.scss";
+@import "../../style/fonts.scss";
+
+.article-page {
+  border: 1px solid $color-main;
+  padding: 0 26px;
+  height: auto;
+  min-height: 100vh;
+
+  &__btn-group {
+    display: flex;
+    grid-column: 3/4;
+    grid-row: 3/4;
+    margin-top: 30px;
+  }
+}
+
+.markdown {
+  grid-column: 1/5;
+  grid-row: 4/5;
+  @include font($font-weight, 16px, $line-height--header, 0.5px);
+  font-family: $font-family;
+  max-width: 85vw;
+  overflow: hidden;
+  background-color: $color-secondary;
+  padding: 0;
+  line-height: 28px;
+
+  h5 {
+    font-size: 20px;
+    -webkit-margin-after: 5px;
+    margin-block-end: 5px;
+    text-align: left;
+  }
+
+  h6 {
+    font-size: 18px;
+    -webkit-margin-after: 0;
+    margin-block-end: 0;
+    -webkit-margin-before: 0;
+    margin-block-start: 0;
+    text-align: left;
+  }
+
+  p {
+    -webkit-margin-after: 20px;
+    margin-block-end: 20px;
+    -webkit-margin-before: 0;
+    margin-block-start: 0;
+    text-align: left;
+  }
+}
+
+:where(.css-dev-only-do-not-override-ph9edi).ant-space {
+  height: auto;
+}
