@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import { Offline, Online } from "react-detect-offline";
 import { message } from 'antd';
-import { getArticles, } from "../../redux/reduser/article";
+import { getArticles } from "../../redux/reduser/article";
 import { getUser } from "../../redux/reduser/auth";
 import { clearMessage } from "../../redux/reduser/message";
 
@@ -29,6 +29,7 @@ function App() {
 
   useEffect(() => {
     dispatch(clearMessage());
+    // dispatch(getTags());
   }, [dispatch]);
 
   useEffect(() => {
@@ -54,6 +55,7 @@ function App() {
   }
 
   const load = !!loading ? <Spinner /> : null;
+  // if (!!loading) return <Spinner />;
 
   return (
     <Router>
@@ -62,21 +64,21 @@ function App() {
           <div className="app">
             <Header />
             {load}
-            <Route path="/articles/" component={ArticleList} exact />
-            <Route path="/articles/:id/"
-              render={({ match }) => {
-                return < ArticlePage articleId={match.params} />
-              }} exact
-            />
             <Route path="/articles/:id/edit"
               render={({ match }) => {
                 return < EditPage articleId={match.params} />
               }}
             />
+            <Route path="/articles/:id/"
+              render={({ match }) => {
+                return < ArticlePage articleId={match.params} />
+              }} exact
+            />
             <Route path="/signin" component={SignInPage} exact />
             <Route path="/signup" component={SignUpPage} exact />
             <Route path="/profile" component={ProfilePage} exact />
             <Route path="/new-article" component={NewArticlePage} exact />
+            <Route path="/articles/" component={ArticleList} exact />
             <Route path="/articles/" component={Footer} exact />
             <Redirect to='/articles/' />
           </div>

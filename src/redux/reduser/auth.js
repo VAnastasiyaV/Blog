@@ -10,12 +10,18 @@ export const signUp = createAsyncThunk(
     async ({ name, email, password }, thunkApi) => {
         try {
             const response = await AuthService.signUp(name, email, password);
-            // thunkApi.dispatch(setMessage(response.user.username));
-            return response.user;
+            // if (!!response.user) {
+            //     return response.user;
+            // };
+            // if (!!response.errors) {
+            return response;
+            // }
         } catch (error) {
             const message = error.message || error.toString();
-            thunkApi.dispatch(setMessage(message));
-            return thunkApi.rejectWithValue();
+            throw new Error(message);
+            // console.log(error.message)
+            // thunkApi.dispatch(setMessage(message));
+            // return thunkApi.rejectWithValue();
         }
     }
 );
@@ -25,11 +31,19 @@ export const login = createAsyncThunk(
     async ({ email, password }, thunkApi) => {
         try {
             const data = await AuthService.login(email, password);
-            return { user: data };
+            // if (!!response.user) {
+            //     return response.user;
+            // };
+            // if (!!data.errors) {
+            //     return data;
+            // }
+            // return { user: data };
+            return data;
         } catch (error) {
             const message = error.message || error.toString();
-            thunkApi.dispatch(setMessage(message));
-            return thunkApi.rejectWithValue();
+            throw new Error(message);
+            // thunkApi.dispatch(setMessage(message));
+            // return thunkApi.rejectWithValue();
         }
     }
 );
@@ -39,10 +53,11 @@ export const update = createAsyncThunk(
     async ({ token, name, email, password, image }, thunkApi) => {
         try {
             const response = await AuthService.update(token, name, email, password, image);
-            return response.user;
+            return response;
         } catch (error) {
             const message = error.message || error.toString();
-            thunkApi.dispatch(setMessage(message));
+            throw new Error(message);
+            // thunkApi.dispatch(setMessage(message));
             // return thunkApi.rejectWithValue();
         }
     }
@@ -67,28 +82,53 @@ export const logout = createAsyncThunk("auth/logout", async () => {
 });
 
 const initialState = user
-    ? { isLoggedIn: true, user, currentUser: null }
-    : { isLoggedIn: false, user: null, currentUser: null };
+    ? { isLoggedIn: true, user, currentUser: null, userErrors: null, loading: false }
+    : { isLoggedIn: false, user: null, currentUser: null, userErrors: null, loading: false };
 
 const authSlice = createSlice({
     name: 'auth',
     initialState,
+    reducers: {
+        resetUserError(state, action) {
+            state.userErrors = null;
+        }
+    },
     extraReducers: (builder) => {
-        return (builder.addCase(signUp.fulfilled, (state, action) => {
-            state.isLoggedIn = true;
-            state.user = action.payload;
-        }),
-            builder.addCase(signUp.rejected, (state, action) => {
-                state.isLoggedIn = false;
+        return (
+            builder.addCase(login.pending, (state, action) => {
+                state.loading = true;
             }),
+            builder.addCase(signUp.fulfilled, (state, action) => {
+                if (!!action.payload.errors) {
+                    state.isLoggedIn = false;
+                    state.userErrors = action.payload.errors;
+                } else {
+                    state.isLoggedIn = true;
+                    state.user = action.payload.user;
+                    state.userErrors = null;
+                };
+
+            }),
+            // builder.addCase(signUp.rejected, (state, action) => {
+            //     state.isLoggedIn = false;
+            // }),
             builder.addCase(login.fulfilled, (state, action) => {
-                state.isLoggedIn = true;
-                state.user = action.payload.user;
+                if (!!action.payload.errors) {
+                    state.isLoggedIn = false;
+                    state.loading = false;
+                    state.userErrors = action.payload.errors;
+                    state.user = null;
+                } else {
+                    state.loading = false;
+                    state.isLoggedIn = true;
+                    state.user = action.payload.user;
+                    state.userErrors = null;
+                };
             }),
-            builder.addCase(login.rejected, (state, action) => {
-                state.isLoggedIn = false;
-                state.user = null;
-            }),
+            // builder.addCase(login.rejected, (state, action) => {
+            //     state.isLoggedIn = false;
+            //     state.user = null;
+            // }),
             builder.addCase(getUser.fulfilled, (state, action) => {
                 state.currentUser = action.payload;
             }),
@@ -96,7 +136,12 @@ const authSlice = createSlice({
                 state.currentUser = null;
             }),
             builder.addCase(update.fulfilled, (state, action) => {
-                state.user = action.payload;
+                if (!!action.payload.errors) {
+                    state.userErrors = action.payload.errors;
+                } else {
+                    state.user = action.payload.user;
+                    state.userErrors = null;
+                };
             }),
             builder.addCase(logout.fulfilled, (state, action) => {
                 state.isLoggedIn = false;
@@ -105,5 +150,6 @@ const authSlice = createSlice({
     },
 });
 
-const { reducer } = authSlice;
+const { actions, reducer } = authSlice;
+export const { resetUserError } = actions;
 export default reducer;

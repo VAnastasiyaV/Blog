@@ -2,6 +2,7 @@ import React, { } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { logout } from "../../redux/reduser/auth";
+import { changePage } from "../../redux/reduser/article";
 import avatar from './avatar.png';
 
 import './header.scss';
@@ -40,7 +41,11 @@ function Header() {
 
     return (
         <header className='header'>
-            <h1 className='header__h1'>Realword Blog</h1>
+            <button className='header__btn' onClick={() => dispatch(changePage(1))}>
+                <Link to='/articles/' className='header__link header__link--no-margin'>
+                    Realword Blog
+                </Link>
+            </button>
             <div className='header__menu'>
                 {rightSection}
             </div >

@@ -55,6 +55,25 @@ export const create = createAsyncThunk(
     }
 );
 
+export const getTags = createAsyncThunk(
+    'articles/getTags',
+    async (thunkApi) => {
+        try {
+            const tags = await ArticleService.getTags();
+            erorrsNumber = 0;
+            return tags;
+        } catch (error) {
+            erorrsNumber++;
+            if (erorrsNumber < 6) {
+                thunkApi.dispatch(getTags());
+            } else {
+                const message = error.message || error.toString();
+                thunkApi.dispatch(setMessage(message));
+            }
+        }
+    }
+);
+
 export const edit = createAsyncThunk(
     'article/edit',
     async ({ title, description, text, tagsList, token, slug }, thunkApi) => {
@@ -134,6 +153,7 @@ export const deleteArticle = createAsyncThunk(
 const initialState = {
     allArticles: [],
     myArticles: [],
+    tags: [],
     currentPage: 1,
     loading: true,
     currentArticle: null,
@@ -149,14 +169,15 @@ const articlesSlice = createSlice({
             const offset = (currentPage - 1) * 5;
             state.currentPage = currentPage;
             getArticles(offset);
-        },
+        }
     },
     extraReducers: (builder) => {
         return (builder.addCase(getArticles.pending, (state, action) => {
             state.loading = true;
-        }), builder.addCase(getCurrentArticle.pending, (state, action) => {
-            state.loading = true;
         }),
+            builder.addCase(getCurrentArticle.pending, (state, action) => {
+                state.loading = true;
+            }),
             builder.addCase(deleteArticle.pending, (state, action) => {
                 state.loading = true;
             }),
@@ -170,7 +191,7 @@ const articlesSlice = createSlice({
                 state.loading = false;
             }),
             builder.addCase(edit.fulfilled, (state, action) => {
-                return state.currentArticle = action.payload.article;
+                state.currentArticle = action.payload.data;
             }),
             builder.addCase(create.fulfilled, (state, action) => {
                 state.myArticles = action.payload.article;

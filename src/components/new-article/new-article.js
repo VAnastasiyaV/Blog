@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { Redirect } from 'react-router-dom';
+import { Redirect, withRouter } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useForm } from "react-hook-form";
 import { message } from 'antd';
 import { clearMessage } from "../../redux/reduser/message";
-import { getArticles } from "../../redux/reduser/article";
+import { getArticles, getCurrentArticle } from "../../redux/reduser/article";
 import Spinner from '../spinner';
 
 import '../header/header.scss';
 import '../sign-sample/sign-sample.scss';
 import './new-article.scss';
 
-const NewArticle = ({ title1, description1, body1, tagList1, action, pageTitle }) => {
+const NewArticle = ({ title1, description1, body1, tagList1, action, pageTitle, history }) => {
    const [loading, setLoading] = useState(false);
    const [created, setCreated] = useState(false);
    const [tags, setTags] = useState(tagList1);
@@ -20,6 +20,7 @@ const NewArticle = ({ title1, description1, body1, tagList1, action, pageTitle }
    const { currentArticle } = useSelector((state) => state.articles);
    const message1 = useSelector((state) => state.message.message);
    const dispatch = useDispatch();
+   let slug;
 
    useEffect(() => {
       dispatch(clearMessage());
@@ -29,7 +30,7 @@ const NewArticle = ({ title1, description1, body1, tagList1, action, pageTitle }
 
    const onSubmit = ({ title, description, text, ...data }) => {
       const token = user.token;
-      const slug = !currentArticle ? '' : currentArticle.slug;
+      slug = !currentArticle ? '' : currentArticle.slug;
       setLoading(true);
       const tagsArr = Object.entries(data).length !== 0 ? Object.values(data) : [];
       let tagsList = [...new Set(tagsArr)];
@@ -38,11 +39,13 @@ const NewArticle = ({ title1, description1, body1, tagList1, action, pageTitle }
       }))
          .then((response) => {
             setLoading(false);
-            message.success('The article has been created/update');
             const offset = (currentPage - 1) * 5;
             dispatch(getArticles(offset));
-            setCreated(true);
-            return;
+            slug = response.payload.data.slug;
+            dispatch(getCurrentArticle(slug)).then(res => {
+               history.push(`/articles/${slug}`)
+            });
+            return setCreated(true);;
          })
          .catch((error) => {
             message.error(`${error}`);
@@ -51,7 +54,7 @@ const NewArticle = ({ title1, description1, body1, tagList1, action, pageTitle }
    };
 
    if (created) {
-      return <Redirect to='/articles/' />
+      return <Redirect to={`/articles/${slug}`} />
    };
 
    if (!!loading)
@@ -181,4 +184,4 @@ const NewArticle = ({ title1, description1, body1, tagList1, action, pageTitle }
    );
 };
 
-export default NewArticle;
+export default withRouter(NewArticle);

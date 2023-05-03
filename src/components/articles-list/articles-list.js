@@ -29,7 +29,7 @@ function ArticlesList({ history }) {
                     data={item}
                     onItemSelected={() => {
                         dispatch(getCurrentArticle(id)).then(res => {
-                            history.push(`/articles/${id}`)
+                            history.push(`/articles/${id}`);
                         });
                         return;
                     }}

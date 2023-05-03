@@ -1,9 +1,10 @@
-import React, { useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
+import { clearMessage } from "../../redux/reduser/message";
 import { Link, Redirect } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useForm } from "react-hook-form";
 import { Divider, message } from 'antd';
-import { signUp } from "../../redux/reduser/auth";
+import { signUp, resetUserError } from "../../redux/reduser/auth";
 import SignSample from '../sign-sample/sign-sample';
 import Spinner from '../spinner';
 
@@ -15,20 +16,26 @@ function SignUpPage() {
    const { handleSubmit, register, formState: { errors } } = useForm();
    const dispatch = useDispatch();
    const invalidClassPasswordR = useRef('');
-   const { isLoggedIn } = useSelector((state) => state.auth);
+   const { isLoggedIn, userErrors } = useSelector((state) => state.auth);
+   let errorName;
+   let errorEmail;
+
+   useEffect(() => {
+      dispatch(clearMessage());
+   }, [dispatch]);
 
    const handleChangeAgreement = () => {
       setNewUser({ agreement: !newUser.agreement });
    }
 
    const onSubmit = ({ name, email, password, passwordRepeat }) => {
+
       invalidClassPasswordR.current = '';
       if (password !== passwordRepeat) return invalidClassPasswordR.current = ' sign-up-page__input--invalid';
       if (!newUser.agreement) return;
-
       setLoading(true);
       dispatch(signUp({ name, email, password }))
-         .then(setLoading(false))
+         .then(() => setLoading(false))
          .catch((error) => {
             message.error(`${error}`);
             setLoading(false);
@@ -39,10 +46,19 @@ function SignUpPage() {
       ? null
       : <p className='sign-up-page__input--invalid'>Passwords must match</p>;
 
+   // userErrors - ответ сервера при выборе уже существующего имени или email
+   if (userErrors) {
+      errorName = Object.keys(userErrors).includes("username") ? `username: ${userErrors.username}` : null;
+      errorEmail = Object.keys(userErrors).includes("email") ? `email: ${userErrors.email}` : null;
+   }
+
+   errorName = errors.name ? errors.name.message : errorName;
+   errorEmail = errors.email ? errors.email.message : errorEmail;
+
    if (isLoggedIn)
       return <Redirect to="/articles/" />;
 
-   if (!!loading)
+   if (loading)
       return <Spinner />;
 
    return (
@@ -56,6 +72,7 @@ function SignUpPage() {
                Username
                <input className='sign-up-page__input'
                   {...register("name", {
+                     onChange: () => dispatch(resetUserError()),
                      required: {
                         value: true,
                         message: 'This field is required.'
@@ -65,35 +82,38 @@ function SignUpPage() {
                         message: "Your name needs to be at least 3 characters. Space can't be the first or the last"
                      },
                   })}
-                  style={{ borderColor: errors.name && "red" }}
+                  style={{ borderColor: errorName && "red" }}
                   type="text"
                   placeholder="Username"
                   autoFocus />
             </label>
-            {errors.name
-               && <p style={{ marginTop: 5, color: 'red', width: 350 }}>{errors.name.message}</p>}
+            {errorName
+               && <p style={{ marginTop: 5, color: 'red', width: 350 }}>{errorName}</p>}
 
             <label className='sign-up-page__label'>
                Email address
                <input className='sign-up-page__input'
                   {...register("email", {
+                     onChange: () => dispatch(resetUserError()),
                      required: {
                         value: true,
                         message: 'This field is required.'
                      },
                   })}
+                  style={{ borderColor: errorEmail && "red" }}
                   type="email"
                   placeholder="Email address"
                />
             </label>
-            {errors.email
-               && <p style={{ marginTop: 5, color: 'red' }}>{errors.email.message}</p>}
+            {errorEmail
+               && <p style={{ marginTop: 5, color: 'red' }}>{errorEmail}</p>}
 
 
             <label className='sign-up-page__label'>
                Password
                <input className={'sign-up-page__input' + invalidClassPasswordR.current}
                   {...register("password", {
+                     onChange: () => invalidClassPasswordR.current = '',
                      required: {
                         value: true,
                         message: 'This field is required.'
@@ -114,6 +134,7 @@ function SignUpPage() {
                Repeat Password
                <input className={'sign-up-page__input' + invalidClassPasswordR.current}
                   {...register("passwordRepeat", {
+                     onChange: () => invalidClassPasswordR.current = '',
                      required: {
                         value: true,
                         message: 'This field is required.'

@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { message } from 'antd';
 import SignSample from '../sign-sample/sign-sample';
 import Spinner from '../spinner';
-import { update } from "../../redux/reduser/auth";
+import { update, resetUserError } from "../../redux/reduser/auth";
 
 import '../sign-up-page/sign-up-page.scss';
 
@@ -14,8 +14,11 @@ function ProfilePage() {
    const [isUpdate, setIsUpdate] = useState(false);
    const { handleSubmit, register, formState: { errors } } = useForm();
    const dispatch = useDispatch();
-   const { user } = useSelector((state) => state.auth);
+   const { user, userErrors } = useSelector((state) => state.auth);
+   let errorName;
+   let errorEmail;
 
+   // проверяем существование картинки профиля
    const isImgUrl = (url) => {
       const img = new Image();
       img.src = url;
@@ -47,10 +50,12 @@ function ProfilePage() {
                ? dispatch(update({ token, name, email, password, image }))
                : dispatch(update({ token, name, email, password, image: '' }));
             isUpdating.then(res => {
-               if (!!res.payload) {
+               if (!!res.payload.user) {
                   setIsUpdate(true);
                   localStorage.setItem(`favorited`, JSON.stringify(favoriteArticles));
                   message.success('The profile has been update');
+                  setLoading(false);
+               } else {
                   setLoading(false);
                }
             })
@@ -59,15 +64,13 @@ function ProfilePage() {
             setLoading(false);
          });
    };
+   if (userErrors) {
+      errorName = Object.keys(userErrors).includes("username") ? `username: ${userErrors.username}` : null;
+      errorEmail = Object.keys(userErrors).includes("email") ? `email: ${userErrors.email}` : null;
+   }
 
-   const invalidName = !!errors.name
-      ? <p className='sign-up-page__invalid'>Your name needs to be at least 3 characters.</p>
-      : null;
-   const invalidClassName = !!errors.name ? ' sign-up-page__input--invalid' : '';
-   const invalidPassword = !!errors.password
-      ? <p className='sign-up-page__invalid'>Your password needs to be at least 6 characters.</p>
-      : null;
-   const invalidClassPassword = !!errors.password ? ' sign-up-page__input--invalid' : '';
+   errorName = errors.name ? errors.name.message : errorName;
+   errorEmail = errors.email ? errors.email.message : errorEmail;
 
    if (!!loading)
       return <Spinner />;
@@ -84,34 +87,65 @@ function ProfilePage() {
          body={<>
             <label className='sign-up-page__label'>
                Username
-               <input className={'sign-up-page__input' + invalidClassName}
-                  {...register("name", { value: user.username, required: true, pattern: /[A-Za-zА-Яа-яЁё0-9]{1}[A-Za-zА-Яа-яЁё0-9\s]{2,19}/ })}
+               <input className='sign-up-page__input'
+                  {...register("name", {
+                     onChange: () => dispatch(resetUserError()),
+                     value: user.username,
+                     required: {
+                        value: true,
+                        message: 'This field is required.'
+                     },
+                     pattern: {
+                        value: /^(?! )(?!.* $)[\s\S]{3,19}$/,
+                        message: "Your name needs to be at least 3 characters. Space can't be the first or the last"
+                     },
+                  })}
+                  style={{ borderColor: errorName && "red" }}
                   type="text"
-                  title="Your name needs to be at least 3 characters. Only letters or numbers,space can't be the first"
                   placeholder="Username"
                   autoFocus
                />
             </label>
-            {invalidName}
-            {errors.email && errors.email.message}
+            {errorName
+               && <p style={{ marginTop: 5, color: 'red', width: 350 }}>{errorName}</p>}
 
             <label className='sign-up-page__label'>
                Email address
                <input className='sign-up-page__input'
-                  {...register("email", { value: user.email, required: true })}
+                  {...register("email", {
+                     onChange: () => dispatch(resetUserError()),
+                     value: user.email,
+                     required: {
+                        value: true,
+                        message: 'This field is required.'
+                     },
+                  })}
+                  style={{ borderColor: errorEmail && "red" }}
                   type="email"
                   placeholder="Email address" />
             </label>
+            {errorEmail
+               && <p style={{ marginTop: 5, color: 'red' }}>{errorEmail}</p>}
 
             <label className='sign-up-page__label'>
                New password
-               <input className={'sign-up-page__input' + invalidClassPassword}
-                  {...register("password", { required: true, pattern: /[^\s]{6,40}/ })}
+               <input className='sign-up-page__input'
+                  {...register("password", {
+                     required: {
+                        value: true,
+                        message: 'This field is required.'
+                     },
+                     pattern: {
+                        value: /^(?! )(?!.* $)(?!(?:.* )).*[\s\S]{6,40}$/,
+                        message: "Your password needs to be at least 6 characters.Your password can't contain spaces"
+                     },
+                  })}
+                  style={{ borderColor: errors.password && "red" }}
                   type="password"
-                  title="Your password needs to be at least 6 characters.Your password can't contain spaces"
-                  placeholder="New password" />
+                  placeholder="Password" />
             </label>
-            {invalidPassword}
+            {errors.password
+               && <p style={{ marginTop: 5, color: 'red', width: 350 }}>{errors.password.message}</p>}
 
             <label className='sign-up-page__label'>
                Avatar image (url)

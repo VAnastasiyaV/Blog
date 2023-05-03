@@ -32,7 +32,7 @@ function ArticlePage({ articleId, history }) {
    const confirm = () => {
       dispatch(deleteArticle({ slug, token }))
          .then((response) => {
-            if (response >= 200 && response < 300) {
+            if (response.payload >= 200 && response.payload < 300) {
                message.success('The article has been deleted');
                dispatch(getArticles(offset));
                return;
@@ -85,7 +85,6 @@ function ArticlePage({ articleId, history }) {
    }
 
    if (isLoading) return <Spinner />;
-
    if (!currentArticle) return <Redirect to='/articles/' />;
 
    const buttons = username === currentArticle.author.username

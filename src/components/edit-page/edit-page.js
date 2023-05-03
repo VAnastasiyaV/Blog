@@ -1,5 +1,4 @@
 import React from 'react';
-import { Redirect } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { edit } from "../../redux/reduser/article";
 import NewArticle from '../new-article';
@@ -10,8 +9,6 @@ import '../new-article/new-article.scss';
 
 const EditPage = () => {
    const { currentArticle } = useSelector((state) => state.articles);
-
-   if (!currentArticle) return <Redirect to="/articles/" />;
 
    const { title, description, body, tagList } = currentArticle;
 

@@ -16,13 +16,7 @@ const signUp = (username, email, password) => {
     }).then(response => {
         return response.json()
     }).then(response => {
-        if (!!response.user) {
-            return response.user
-        };
-        if (!!response.errors) {
-            const errorMessage = `${JSON.stringify(response.errors)}`;
-            throw new Error(errorMessage);
-        }
+        return response;
     }).catch((error) => {
         throw new Error(error);
     });
@@ -43,14 +37,7 @@ export const login = (email, password) => {
     }).then(response => {
         return response.json();
     }).then((response) => {
-        if (!!response.user) {
-            localStorage.setItem("user", JSON.stringify(response.user));
-            return response.user;
-        }
-        if (!!response.errors) {
-            const errorMessage = `${JSON.stringify(response.errors)}`;
-            throw new Error(errorMessage);
-        }
+        return response;
     }).catch((error) => {
         throw new Error(error);
     });
@@ -74,15 +61,7 @@ export const update = (token, username, email, password, image) => {
     }).then(response => {
         return response.json();
     }).then((response) => {
-        if (!!response.user) {
-            localStorage.setItem("user", JSON.stringify(response.user));
-            return response;
-        }
-        if (!!response.errors) {
-            const value = Object.values(response.errors);
-            const errorMessage = `${value[1].code}`;
-            throw new Error(errorMessage);
-        }
+        return response;
     }).catch((error) => {
         throw new Error(error);
     });
